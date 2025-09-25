@@ -3,52 +3,20 @@ name: Deploy to EC2
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
   deploy:
     runs-on: self-hosted
     
     steps:
+    - name: Clean up disk space
+      run: |
+        docker system prune -f || true
+        sudo apt clean || true
+        
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: |
-          backend/package-lock.json
-          frontend/package-lock.json
-          dashboard/package-lock.json
-    
-    - name: Install backend dependencies
-      run: |
-        cd backend
-        npm ci
-        
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm ci
-        
-    - name: Install dashboard dependencies
-      run: |
-        cd dashboard
-        npm ci
-    
-    - name: Build frontend
-      run: |
-        cd frontend
-        npm run build
-        
-    - name: Build dashboard
-      run: |
-        cd dashboard
-        npm run build
-    
     - name: Stop existing containers
       run: |
         docker-compose down || true
@@ -57,7 +25,7 @@ jobs:
       run: |
         docker-compose up -d --build
         
-    - name: Wait for services to be ready
+    - name: Wait for services
       run: |
         sleep 30
         
@@ -67,9 +35,6 @@ jobs:
         curl -f http://localhost:3000 || exit 1
         curl -f http://localhost:80 || exit 1
         
-    - name: Notify deployment success
+    - name: Clean up after deployment
       run: |
-        echo "✅ Deployment successful!"
-        echo "🌐 Frontend: http://54.87.180.194"
-        echo "📊 Dashboard: http://54.87.180.194:3000"
-        echo "🔌 API: http://54.87.180.194:8080"
+        docker system prune -f || true
