@@ -87,3 +87,8 @@ const TopBar = () => {
 };
 
 export default TopBar;
+
+// Add this at the end of the component, before the closing div
+<div className="timestamp">
+  <p>Last Updated: {new Date().toLocaleTimeString()}</p>
+</div>
