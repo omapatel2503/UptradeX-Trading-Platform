@@ -1,1 +1,6 @@
-readme.md
+# Ignore environment variable files
+.env
+.env.*
+
+# Ignore node_modules folder
+node_modules/

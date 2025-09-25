@@ -1,217 +1,228 @@
-require("dotenv").config();
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+const yahooFinance = require('yahoo-finance2').default;
 
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+// Suppress Yahoo Finance survey notice
+yahooFinance.suppressNotices(['yahooSurvey']);
 
-const { HoldingsModel } = require("./model/HoldingsModel");
+const { HoldingsModel } = require('./model/HoldingsModel');
+const { PositionsModel } = require('./model/PositionsModel');
+const { OrdersModel } = require('./model/OrdersModel');
 
-const { PositionsModel } = require("./model/PositionsModel");
-const { OrdersModel } = require("./model/OrdersModel");
-
-const PORT = process.env.PORT || 3002;
-const uri = process.env.MONGO_URL;
+const PORT = process.env.PORT || 8080;
+const MONGO_URI = process.env.DATABASE_URL;
 
 const app = express();
 
-app.use(cors());
-app.use(bodyParser.json());
+// Security middleware
+app.use(helmet());
+app.use(compression());
 
-// app.get("/addHoldings", async (req, res) => {
-//   let tempHoldings = [
-//     {
-//       name: "BHARTIARTL",
-//       qty: 2,
-//       avg: 538.05,
-//       price: 541.15,
-//       net: "+0.58%",
-//       day: "+2.99%",
-//     },
-//     {
-//       name: "HDFCBANK",
-//       qty: 2,
-//       avg: 1383.4,
-//       price: 1522.35,
-//       net: "+10.04%",
-//       day: "+0.11%",
-//     },
-//     {
-//       name: "HINDUNILVR",
-//       qty: 1,
-//       avg: 2335.85,
-//       price: 2417.4,
-//       net: "+3.49%",
-//       day: "+0.21%",
-//     },
-//     {
-//       name: "INFY",
-//       qty: 1,
-//       avg: 1350.5,
-//       price: 1555.45,
-//       net: "+15.18%",
-//       day: "-1.60%",
-//       isLoss: true,
-//     },
-//     {
-//       name: "ITC",
-//       qty: 5,
-//       avg: 202.0,
-//       price: 207.9,
-//       net: "+2.92%",
-//       day: "+0.80%",
-//     },
-//     {
-//       name: "KPITTECH",
-//       qty: 5,
-//       avg: 250.3,
-//       price: 266.45,
-//       net: "+6.45%",
-//       day: "+3.54%",
-//     },
-//     {
-//       name: "M&M",
-//       qty: 2,
-//       avg: 809.9,
-//       price: 779.8,
-//       net: "-3.72%",
-//       day: "-0.01%",
-//       isLoss: true,
-//     },
-//     {
-//       name: "RELIANCE",
-//       qty: 1,
-//       avg: 2193.7,
-//       price: 2112.4,
-//       net: "-3.71%",
-//       day: "+1.44%",
-//     },
-//     {
-//       name: "SBIN",
-//       qty: 4,
-//       avg: 324.35,
-//       price: 430.2,
-//       net: "+32.63%",
-//       day: "-0.34%",
-//       isLoss: true,
-//     },
-//     {
-//       name: "SGBMAY29",
-//       qty: 2,
-//       avg: 4727.0,
-//       price: 4719.0,
-//       net: "-0.17%",
-//       day: "+0.15%",
-//     },
-//     {
-//       name: "TATAPOWER",
-//       qty: 5,
-//       avg: 104.2,
-//       price: 124.15,
-//       net: "+19.15%",
-//       day: "-0.24%",
-//       isLoss: true,
-//     },
-//     {
-//       name: "TCS",
-//       qty: 1,
-//       avg: 3041.7,
-//       price: 3194.8,
-//       net: "+5.03%",
-//       day: "-0.25%",
-//       isLoss: true,
-//     },
-//     {
-//       name: "WIPRO",
-//       qty: 4,
-//       avg: 489.3,
-//       price: 577.75,
-//       net: "+18.08%",
-//       day: "+0.32%",
-//     },
-//   ];
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+app.use('/api/', limiter);
 
-//   tempHoldings.forEach((item) => {
-//     let newHolding = new HoldingsModel({
-//       name: item.name,
-//       qty: item.qty,
-//       avg: item.avg,
-//       price: item.price,
-//       net: item.day,
-//       day: item.day,
-//     });
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://yourdomain.com'] 
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
-//     newHolding.save();
-//   });
-//   res.send("Done!");
-// });
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// app.get("/addPositions", async (req, res) => {
-//   let tempPositions = [
-//     {
-//       product: "CNC",
-//       name: "EVEREADY",
-//       qty: 2,
-//       avg: 316.27,
-//       price: 312.35,
-//       net: "+0.58%",
-//       day: "-1.24%",
-//       isLoss: true,
-//     },
-//     {
-//       product: "CNC",
-//       name: "JUBLFOOD",
-//       qty: 1,
-//       avg: 3124.75,
-//       price: 3082.65,
-//       net: "+10.04%",
-//       day: "-1.35%",
-//       isLoss: true,
-//     },
-//   ];
+// ---------- DB ----------
+if (MONGO_URI) {
+    mongoose.connect(MONGO_URI)
+        .then(() => console.log('✅ Connected to MongoDB'))
+        .catch(err => console.warn('⚠️ MongoDB not available:', err.message));
+} else {
+    console.log('⚠️ MongoDB URI not provided - running without database');
+}
 
-//   tempPositions.forEach((item) => {
-//     let newPosition = new PositionsModel({
-//       product: item.product,
-//       name: item.name,
-//       qty: item.qty,
-//       avg: item.avg,
-//       price: item.price,
-//       net: item.net,
-//       day: item.day,
-//       isLoss: item.isLoss,
-//     });
-
-//     newPosition.save();
-//   });
-//   res.send("Done!");
-// });
-
-app.get("/allHoldings", async (req, res) => {
-  let allHoldings = await HoldingsModel.find({});
-  res.json(allHoldings);
+// ---------- Holdings ----------
+app.get('/allHoldings', async (req, res) => {
+    try {
+        const allHoldings = await HoldingsModel.find({});
+        res.json(allHoldings);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching holdings', error: err.message });
+    }
 });
 
-app.get("/allPositions", async (req, res) => {
-  let allPositions = await PositionsModel.find({});
-  res.json(allPositions);
+// ---------- Positions ----------
+app.get('/allPositions', async (req, res) => {
+    try {
+        const allPositions = await PositionsModel.find({});
+        res.json(allPositions);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching positions', error: err.message });
+    }
 });
 
-app.post("/newOrder", async (req, res) => {
-  let newOrder = new OrdersModel({
-    name: req.body.name,
-    qty: req.body.qty,
-    price: req.body.price,
-    mode: req.body.mode,
-  });
-
-  newOrder.save();
-
-  res.send("Order saved!");
+// ---------- Orders ----------
+app.get('/allOrders', async (req, res) => {
+    try {
+        const allOrders = await OrdersModel.find({});
+        res.json(allOrders);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching orders', error: err.message });
+    }
 });
 
+app.post('/newOrder', async (req, res) => {
+    const { name, qty, price, mode } = req.body;
+    try {
+        const newOrder = new OrdersModel({ name, qty, price, mode });
+        await newOrder.save();
+        res.status(201).json({ message: 'Order created successfully', order: newOrder });
+    } catch (err) {
+        res.status(500).json({ message: 'Error creating order', error: err.message });
+    }
+});
+
+// ---------- Live Stock APIs ----------
+
+// single stock
+app.get('/api/stock/:symbol', async (req, res) => {
+    const { symbol } = req.params;
+    try {
+        const data = await yahooFinance.quote(symbol);
+        res.json({
+            symbol: data.symbol,
+            price: data.regularMarketPrice,
+            change: data.regularMarketChange,
+            percent: data.regularMarketChangePercent,
+        });
+    } catch (err) {
+        console.error('Error fetching stock:', err.message);
+        res.status(500).json({ error: 'Failed to fetch stock data' });
+    }
+});
+
+// batch watchlist
+app.post('/api/watchlist', async (req, res) => {
+    const { symbols } = req.body; // e.g. ["RELIANCE.NS","TCS.NS"]
+    
+    // Rate limiting check
+    if (!symbols || symbols.length === 0) {
+        return res.status(400).json({ error: 'No symbols provided' });
+    }
+    
+    if (symbols.length > 25) {
+        return res.status(400).json({ error: 'Too many symbols. Maximum 25 allowed per request.' });
+    }
+    
+    try {
+        console.log(`Fetching data for ${symbols.length} symbols:`, symbols);
+        
+        // Add small delay between requests to avoid rate limiting
+        const results = await Promise.all(
+            symbols.map(async (sym, index) => {
+                // Small delay for each request to avoid overwhelming the API
+                if (index > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                return yahooFinance.quote(sym);
+            })
+        );
+        
+        const formatted = results.map(d => ({
+            symbol: d.symbol,
+            price: d.regularMarketPrice || 0,
+            change: d.regularMarketChange || 0,
+            percent: d.regularMarketChangePercent || 0,
+        }));
+        
+        console.log(`Successfully fetched data for ${formatted.length} symbols`);
+        res.json(formatted);
+    } catch (err) {
+        console.error('Error fetching watchlist data:', err.message);
+        res.status(500).json({ 
+            error: 'Failed to fetch watchlist data', 
+            details: err.message,
+            suggestion: 'Try reducing the number of symbols or check your internet connection'
+        });
+    }
+});
+
+// indices (NIFTY 50 & SENSEX)
+app.get('/api/indices', async (req, res) => {
+    try {
+        const [nifty, sensex] = await Promise.all([
+            yahooFinance.quote("^NSEI"),  // NIFTY 50
+            yahooFinance.quote("^BSESN") // SENSEX
+        ]);
+        res.json({
+            nifty: {
+                symbol: nifty.symbol,
+                price: nifty.regularMarketPrice,
+                change: nifty.regularMarketChange,
+                percent: nifty.regularMarketChangePercent,
+            },
+            sensex: {
+                symbol: sensex.symbol,
+                price: sensex.regularMarketPrice,
+                change: sensex.regularMarketChange,
+                percent: sensex.regularMarketChangePercent,
+            }
+        });
+    } catch (err) {
+        console.error("Error fetching indices:", err.message);
+        res.status(500).json({ error: 'Failed to fetch indices' });
+    }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    res.status(500).json({ 
+        error: 'Internal server error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    if (mongoose.connection.readyState === 1) {
+        mongoose.connection.close();
+        console.log('MongoDB connection closed.');
+    }
+    process.exit(0);
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT received. Shutting down gracefully...');
+    if (mongoose.connection.readyState === 1) {
+        mongoose.connection.close();
+        console.log('MongoDB connection closed.');
+    }
+    process.exit(0);
+});
+
+// ---------- Server ----------
 app.listen(PORT, () => {
-  console.log("App started!");
-  mongoose.connect(uri);
-  console.log("DB started!");
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`💾 Memory limit: ${process.env.NODE_OPTIONS || 'default'}`);
 });

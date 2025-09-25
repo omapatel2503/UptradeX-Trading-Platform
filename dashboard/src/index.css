@@ -276,14 +276,19 @@ code {
 
 .menus li {
   display: inline-block;
-  margin-right: 30px;
+  margin-right: 40px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .menu {
-  font-size: 0.8rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: rgb(70, 70, 70);
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .menu.selected {
@@ -328,6 +333,7 @@ hr {
 
 .menu:hover {
   color: rgb(245, 104, 52);
+  background-color: rgba(245, 104, 52, 0.1);
 }
 
 .profile:hover {
@@ -337,6 +343,131 @@ hr {
 .profile:hover .username {
   cursor: pointer;
   color: rgb(223, 91, 43);
+}
+
+/* Zerodha-style Navbar */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  padding: 0 20px;
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
+  box-sizing: border-box;
+}
+
+/* Logo Section */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo-img {
+  height: 32px;
+  width: auto;
+}
+
+/* Navigation Menu */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+}
+
+.nav-menu li {
+  margin: 0;
+}
+
+.nav-menu-item {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.nav-menu-item:hover {
+  color: #f56834;
+}
+
+.nav-menu-item.active {
+  color: #f56834;
+  border-bottom-color: #f56834;
+}
+
+/* User Profile Section */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.user-profile:hover {
+  background-color: #f5f5f5;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #c82333;
 }
 
 .orders {
@@ -624,7 +755,14 @@ hr {
 .percent {
   font-size: 0.8rem;
   font-weight: 400;
-  color: rgb(146, 146, 146);
+}
+
+.percent.up {
+  color: rgb(72, 194, 55);
+}
+
+.percent.down {
+  color: rgb(223, 73, 73);
 }
 
 /* sudo selectors */
@@ -841,6 +979,607 @@ hr {
 .action:hover {
   background-color: rgb(212, 212, 212);
 }
+
+/* Real-time indicators */
+.loading-indicator {
+  color: #007bff;
+  margin-left: 8px;
+  animation: spin 1s linear infinite;
+}
+
+.error-indicator {
+  color: #dc3545;
+  margin-left: 8px;
+}
+
+.live-indicator {
+  color: #28a745;
+  font-size: 0.8em;
+  margin-left: 4px;
+  animation: pulse 2s infinite;
+}
+
+.realtime-price {
+  font-weight: bold;
+  color: #007bff;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Market Indices */
+.market-indices {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.market-indices h4 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.indices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.index-card {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 12px;
+  border-left: 4px solid #007bff;
+}
+
+.index-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.index-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.index-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.index-change {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.index-change.up {
+  color: #28a745;
+}
+
+.index-change.down {
+  color: #dc3545;
+}
+
+.index-change .up,
+.index-change .down {
+  margin-right: 4px;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+/* Authentication Pages */
+.auth-container, .login-container {
+  min-height: 100vh;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.auth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.zerodha-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  background: #387ed1;
+  border-radius: 4px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #387ed1;
+}
+
+.auth-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #387ed1;
+}
+
+.auth-main {
+  padding: 60px 40px;
+}
+
+.auth-content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.auth-left {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.auth-title {
+  font-size: 48px;
+  font-weight: 300;
+  color: #333;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.auth-subtitle {
+  font-size: 20px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.auth-graphics {
+  position: relative;
+  height: 400px;
+}
+
+.graphics-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.watchlist-mockup, .console-mockup {
+  position: absolute;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.watchlist-mockup {
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 200px;
+}
+
+.console-mockup {
+  top: 60px;
+  left: 120px;
+  width: 300px;
+  height: 180px;
+}
+
+.mockup-header {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.indices-mockup, .stocks-list {
+  margin-bottom: 12px;
+}
+
+.index-item, .stock-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 12px;
+}
+
+.price {
+  font-weight: 600;
+}
+
+.change.up {
+  color: #28a745;
+}
+
+.change.down {
+  color: #dc3545;
+}
+
+.console-content {
+  font-size: 12px;
+}
+
+.user-info, .equity-info, .holdings-info {
+  margin-bottom: 8px;
+}
+
+.chart-placeholder {
+  background: #e9ecef;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 10px;
+}
+
+.kite-card, .coin-card {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  width: 200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.kite-card {
+  bottom: 0;
+  left: 0;
+}
+
+.coin-card {
+  bottom: 0;
+  right: 0;
+}
+
+.card-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card-content {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.mobile-mockup {
+  margin-top: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.mobile-content {
+  font-size: 10px;
+}
+
+.mobile-stats {
+  margin-top: 4px;
+}
+
+.mobile-stats div {
+  margin-bottom: 2px;
+}
+
+.auth-right {
+  display: flex;
+  align-items: center;
+}
+
+.signup-form-container {
+  width: 100%;
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.form-title {
+  font-size: 32px;
+  font-weight: 300;
+  color: #333;
+  margin: 0 0 30px 0;
+}
+
+.signup-form, .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #387ed1;
+}
+
+.signup-btn, .login-btn {
+  background: #387ed1;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.signup-btn:hover:not(:disabled), .login-btn:hover:not(:disabled) {
+  background: #2c6aa0;
+}
+
+.signup-btn:disabled, .login-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.auth-footer, .login-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-link {
+  color: #387ed1;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #c3e6cb;
+}
+
+/* Login Page Specific */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.login-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.login-title {
+  font-size: 32px;
+  font-weight: 300;
+  color: #333;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+
+.login-footer-section {
+  background: #f8f9fa;
+  padding: 40px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.copyright {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.footer-column h4 {
+  color: #333;
+  font-size: 16px;
+  margin: 0 0 16px 0;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column li {
+  margin-bottom: 8px;
+}
+
+.footer-column a {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-column a:hover {
+  color: #387ed1;
+}
+
+.footer-legal {
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 40px;
+}
+
+.legal-content {
+  margin-bottom: 30px;
+}
+
+.legal-content p {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.legal-content a {
+  color: #387ed1;
+  text-decoration: none;
+}
+
+.legal-content a:hover {
+  text-decoration: underline;
+}
+
+.attention-investors {
+  margin: 20px 0;
+}
+
+.attention-investors h5 {
+  color: #333;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+}
+
+.attention-investors ol {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.6;
+  padding-left: 20px;
+}
+
+.attention-investors li {
+  margin-bottom: 8px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #387ed1;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #2c6aa0;
+  text-decoration: underline;
+}
+
 
 
 
