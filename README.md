@@ -214,4 +214,4 @@ For issues and questions:
 
 ---
 
-**Note**: This is a clone project for educational purposes. Real trading requires proper regulatory compliance and security measures.
+**Note**: This is a clone project for educational purposes. Real trading requires proper regulatory compliance and security measures. CI/CD is now active! 
