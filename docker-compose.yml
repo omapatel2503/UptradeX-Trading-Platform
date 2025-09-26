@@ -1,110 +1,52 @@
-version: '3.8'
-
 services:
-  # Backend API Service - Optimized for low memory
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: zerodha-backend
-    restart: unless-stopped
+    build: ./backend
+    ports:
+      - "8080:8080"
     environment:
       - NODE_ENV=production
       - PORT=8080
       - DATABASE_URL=mongodb://mongo:27017/zerodha
-    ports:
-      - "8080:8080"
-    networks:
-      - zerodha-network
     depends_on:
       - mongo
-    deploy:
-      resources:
-        limits:
-          memory: 200M
-          cpus: '0.5'
-        reservations:
-          memory: 128M
-          cpus: '0.25'
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/indices"]
-      interval: 30s
-      timeout: 5s
-      retries: 2
-      start_period: 30s
-
-  # Frontend Service - Minimal nginx
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: zerodha-frontend
     restart: unless-stopped
+    mem_limit: 200m
+    cpus: 0.5
+
+  frontend:
+    build: ./frontend
     ports:
       - "80:80"
-    networks:
-      - zerodha-network
     depends_on:
       - backend
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-          cpus: '0.25'
-        reservations:
-          memory: 32M
-          cpus: '0.1'
-
-  # Dashboard Service - Minimal nginx
-  dashboard:
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
-    container_name: zerodha-dashboard
     restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.25
+
+  dashboard:
+    build: ./dashboard
     ports:
       - "3000:80"
-    networks:
-      - zerodha-network
     depends_on:
       - backend
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-          cpus: '0.25'
-        reservations:
-          memory: 32M
-          cpus: '0.1'
-
-  # MongoDB Service - Lightweight configuration
-  mongo:
-    image: mongo:6.0-alpine
-    container_name: zerodha-mongo
     restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password123
-      - MONGO_INITDB_DATABASE=zerodha
+    mem_limit: 64m
+    cpus: 0.25
+
+  mongo:
+    image: mongo:6.0
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=zerodha
     volumes:
       - mongo_data:/data/db
-    networks:
-      - zerodha-network
-    deploy:
-      resources:
-        limits:
-          memory: 400M
-          cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
-    command: mongod --wiredTigerCacheSizeGB 0.2 --logpath /var/log/mongodb/mongod.log
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.25
+    command: mongod --wiredTigerCacheSizeGB 0.25 --logpath /var/log/mongodb/mongod.log
 
 volumes:
   mongo_data:
-
-networks:
-  zerodha-network:
-    driver: bridge
