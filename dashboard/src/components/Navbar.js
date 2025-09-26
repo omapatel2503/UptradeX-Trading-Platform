@@ -6,7 +6,7 @@ function Navbar() {
         <nav className="navbar navbar-expand-lg border-bottom" style={{ backgroundColor: "#fff", height: "70px" }}>
             <div className="container p-2">
                 <Link className="navbar-brand" to={"/"}>
-                    <img src='/logo.svg' alt='Zerodha Logo' style={{ width: "120px", height: "auto" }} />
+                    <img src='/logo.svg' alt='UptradeX Logo' style={{ width: "120px", height: "auto" }} />
                 </Link>
                 <button
                     className="navbar-toggler"

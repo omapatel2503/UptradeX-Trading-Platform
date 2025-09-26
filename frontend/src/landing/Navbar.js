@@ -5,7 +5,7 @@ function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg border-bottom" style={{ backgroundColor: "#fff", height: "70px" }}>
             <div className="container p-2">
-                <Link className="navbar-brand" to={"/"}><img src='media/images/logo.svg' alt='Logo' style={{ width: "22.5%", marginLeft: "20%" }}></img></Link>
+                <Link className="navbar-brand" to={"/"}><img src='media/images/logo.svg' alt='UptradeX Logo' style={{ width: "22.5%", marginLeft: "20%" }}></img></Link>
                 <button
                     className="navbar-toggler"
                     type="button"

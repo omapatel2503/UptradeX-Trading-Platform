@@ -31,7 +31,7 @@ const Menu = () => {
     <div className="navbar-container">
       {/* Logo */}
       <div className="navbar-logo">
-        <img src="logo.png" alt="Zerodha" className="logo-img" />
+        <img src="logo.svg" alt="UptradeX" className="logo-img" />
       </div>
 
       {/* Navigation Menu */}

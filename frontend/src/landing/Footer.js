@@ -6,8 +6,8 @@ function Footer() {
             <div className='container py-4 '> {/* Added padding to the container */}
                 <div className='row'>
                     <div className='col-lg-3 col-md-6 col-sm-12 mb-4'> {/* Added mb-4 for spacing between columns on smaller screens */}
-                        <img src='media/images/logo.svg' alt='Logo' style={{ width: "50%" }} />
-                        <p className="mt-3 text-muted">© 2010 - 2025, Zerodha Broking Ltd.<br /> All rights reserved.</p>
+                        <img src='media/images/logo.svg' alt='UptradeX Logo' style={{ width: "50%" }} />
+                        <p className="mt-3 text-muted">© 2025, UptradeX Trading Platform.<br /> All rights reserved.</p>
                         <div className="social-icons mt-3 d-flex"> {/* Added d-flex for row layout of icons */}
                             {/* Assuming Font Awesome is set up, these icons should render */}
                             <a href="#" className="me-2 text-muted-custom"><i className="fa-brands fa-x-twitter"></i></a>
