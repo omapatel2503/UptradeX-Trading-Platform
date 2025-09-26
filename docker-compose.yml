@@ -6,7 +6,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8080
-      - DATABASE_URL=mongodb://mongo:27017/zerodha
+      - DATABASE_URL=mongodb://mongo:27017/uptradex
     depends_on:
       - mongo
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=zerodha
+      - MONGO_INITDB_DATABASE=uptradex
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
