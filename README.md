@@ -17,26 +17,7 @@ A full-stack trading platform with real-time stock data, Redis caching, and Mong
 ![System Architecture](system_architucture.png)
 
 ```
-UptradeX/
-├── frontend/          # Marketing site & Authentication (Port 80)
-│   ├── src/
-│   │   ├── landing/   # Landing pages, signup, login
-│   │   ├── config/    # Environment configuration
-│   │   └── ...
-├── dashboard/         # Trading Dashboard (Port 3000)
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── services/      # API services
-│   │   ├── utils/         # Utility functions
-│   │   ├── constants/     # App constants
-│   │   ├── config/        # Configuration
-│   │   └── ...
-└── backend/          # API Server (Port 8080)
-    ├── config/       # Redis & MongoDB configuration
-    ├── services/     # Stock service with caching
-    ├── model/        # Database models
-    ├── schema/       # Database schemas
-    └── index.js      # Main server file
+
 ```
 
 ### 🔄 Data Flow
