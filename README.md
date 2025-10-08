@@ -14,7 +14,7 @@ A full-stack trading platform with real-time stock data, Redis caching, and Mong
 
 ## 🏗️ Architecture
 
-![System Architecture](assets/system_architucture.png)
+![System Architecture](system_architucture.png)
 
 ```
 UptradeX/
