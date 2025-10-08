@@ -14,6 +14,8 @@ A full-stack trading platform with real-time stock data, Redis caching, and Mong
 
 ## 🏗️ Architecture
 
+![System Architecture](assets/system_architucture.png)
+
 ```
 UptradeX/
 ├── frontend/          # Marketing site & Authentication (Port 80)
